@@ -1,0 +1,123 @@
+# this file contains:
+# 1 build system configuration
+# 2 project configuration
+# 3 tool configuration, for:
+# - hatch
+# - black
+# - ruff
+# - pytest
+# - mypy
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sphinxext-altair"
+authors = [ {name = "sphinxext-altair Contributors"} ]
+dependencies = [
+    "sphinx",
+    "docutils",
+    "altair>=5.0.0"
+]
+description = "sphinxext-altair: Sphinx extension for embedding Altair charts"
+readme = "README.md"
+keywords = [
+    "altair",
+    "sphinxext"
+]
+requires-python = ">=3.7"
+dynamic = ["version"]
+license-files = { paths = ["LICENSE"] }
+classifiers= [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[project.urls]
+Source = "https://github.com/altair-viz/sphinxext-altair"
+
+[project.optional-dependencies]
+dev = [
+    "hatch",
+    "ruff",
+    "black<24",
+    "pytest",
+    "mypy",
+    "types-docutils",
+]
+
+[tool.hatch.version]
+path = "sphinxext_altair/__init__.py"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build]
+include = [
+    "/sphinxext_altair",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml"
+]
+
+[tool.hatch.envs.default]
+features = ["dev"]
+
+[tool.hatch.envs.default.scripts]
+test = [
+    "black --diff --color --check .",
+    "ruff check .",
+    "mypy sphinxext_altair tests",
+    "python -m pytest tests"
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py37", "py38", "py39", "py310", "py311"]
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.mypy_cache
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+select = [
+    # flake8-bugbear
+    "B",
+    # flake8-comprehensions
+    "C4",
+    # pycodestyle-error
+    "E",
+    # pycodestyle-warning
+    "W",
+    # pyflakes
+    "F",
+    # flake8-tidy-imports
+    "TID"
+]
+exclude = [
+    ".git",
+    "build",
+    "__pycache__",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "altair.*"
+]
+ignore_missing_imports = true
