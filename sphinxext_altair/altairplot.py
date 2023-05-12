@@ -3,9 +3,8 @@ Altair Plot Sphinx Extension
 ============================
 
 This extension provides a means of inserting live-rendered Altair plots within
-sphinx documentation. There are two directives defined: ``altair-setup`` and
-``altair-plot``. ``altair-setup`` code is used to set-up various options
-prior to running the plot code. For example::
+sphinx documentation using the directive ``altair-plot``. You can also use it
+to set-up various options prior to running the plot code. For example::
 
     .. altair-plot::
         :output: none
@@ -283,18 +282,6 @@ def html_visit_altair_plot(self, node):
             except alt.utils.schemapi.SchemaValidationError as err:
                 raise ValueError("Invalid chart: {0}".format(node["code"])) from err
             actions = node["links"]
-
-            # TODO: add an option to save chart specs to file & load from there.
-            # TODO: add renderer option
-
-            # Write spec to a *.vl.json file
-            # dest_dir = os.path.join(self.builder.outdir, node['relpath'])
-            # if not os.path.exists(dest_dir):
-            #     os.makedirs(dest_dir)
-            # filename = "{0}.vl.json".format(node['target_id'])
-            # dest_path = os.path.join(dest_dir, filename)
-            # with open(dest_path, 'w') as f:
-            #     json.dump(spec, f)
 
             # Pass relevant info into the template and append to the output
             html = VGL_TEMPLATE.render(
