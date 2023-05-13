@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 # Tests are inspired by the test suite of sphinx itself
 import pytest
 
