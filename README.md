@@ -17,7 +17,7 @@
         )
 ```
 
-<img src="images/example_screenshot.png"  width="70%">
+<img src="https://raw.githubusercontent.com/altair-viz/sphinxext-altair/main/images/example_screenshot.png"  width="70%">
 
 You can enable the extension by adding it to your `conf.py`:
 
@@ -29,7 +29,13 @@ extensions = [
 ]
 ```
 
-You can find all available options in the docstring of `sphinxext_altair/altairplot.py`. For more examples on how to use this extension, see the test Sphinx documentation in `tests/roots/test-altairplot` or the official [Altair documentation](https://github.com/altair-viz/altair/tree/master/doc)
+You can find all available options in the docstring of `sphinxext_altair/altairplot.py`. For more examples on how to use this extension, see the test Sphinx documentation in `tests/roots/test-altairplot` or the official [Altair documentation](https://github.com/altair-viz/altair/tree/master/doc).
+
+You can install the extension with:
+
+```bash
+pip install sphinxext-altair
+```
 
 
 # Contributing
