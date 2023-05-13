@@ -38,6 +38,7 @@ The directives have the following options::
         :links: editor source export  # specify one or more of these options
         :chart-var-name: chart  # name of variable in namespace containing output
         :strict: # if set, then code with errors will raise instead of being skipped
+        :div_class: # class name for the div element containing the plot
 
 
 Additionally, this extension introduces a global configuration

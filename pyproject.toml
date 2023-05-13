@@ -83,6 +83,10 @@ test = [
     "python -m pytest tests"
 ]
 
+build-test-docs = ["sphinx-build -b html tests/roots/test-altairplot tests/roots/test-altairplot/_build/html"]
+serve-test-docs = ["(cd tests/roots/test-altairplot/_build/html && python -m http.server)"]
+
+
 [tool.black]
 line-length = 88
 target-version = ["py37", "py38", "py39", "py310", "py311"]
