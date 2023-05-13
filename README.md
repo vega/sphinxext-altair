@@ -1,7 +1,7 @@
 # sphinxext-altair
 **sphinxext-altair** provides the directive `altair-plot` to insert live-rendered Altair plots within your Sphinx documentation:
 
-```
+```python
     .. altair-plot::
         import altair as alt
         from vega_datasets import data
@@ -17,7 +17,7 @@
         )
 ```
 
-![Example screenshot](images/example_screenshot.png)
+<img src="images/example_screenshot.png"  width="70%">
 
 You can find all available options in the docstring of `sphinxext_altair/altairplot.py`. For more examples on how to use this extension, see the test Sphinx documentation in `tests/roots/test-altairplot` or the official [Altair documentation](https://github.com/altair-viz/altair/tree/master/doc)
 
