@@ -9,14 +9,14 @@ to set-up various options prior to running the plot code. For example::
     .. altair-plot::
         :output: none
 
-        from altair import *
+        import altair as alt
         import pandas as pd
         data = pd.DataFrame({'a': list('CCCDDDEEE'),
                              'b': [2, 7, 4, 1, 2, 6, 8, 4, 7]})
 
     .. altair-plot::
 
-        Chart(data).mark_point().encode(
+        alt.Chart(data).mark_point().encode(
             x='a',
             y='b'
         )
