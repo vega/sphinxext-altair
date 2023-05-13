@@ -58,8 +58,9 @@ import contextlib
 import io
 import json
 import os
+import sys
 import warnings
-from typing import Any, Callable, Dict, List, Literal, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import altair as alt
 import jinja2
@@ -70,6 +71,11 @@ from docutils import nodes
 from docutils.parsers.rst import Directive
 from docutils.parsers.rst.directives import flag, unchanged
 from sphinx.locale import _
+
+if sys.version_info >= (3, 8):
+    from typing import Literal
+else:
+    from typing_extensions import Literal
 
 # These default URLs can be changed in conf.py; see setup() below.
 VEGA_JS_URL_DEFAULT = "https://cdn.jsdelivr.net/npm/vega@{}".format(alt.VEGA_VERSION)
