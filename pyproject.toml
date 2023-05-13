@@ -18,7 +18,7 @@ authors = [ {name = "sphinxext-altair Contributors"} ]
 dependencies = [
     "sphinx",
     "docutils",
-    "altair>=5.0.0",
+    "altair>=4.0.0",
     "typing_extensions>=4.0.1; python_version<\"3.8\"",
 ]
 description = "sphinxext-altair: Sphinx extension for embedding Altair charts"
