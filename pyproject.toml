@@ -53,6 +53,8 @@ dev = [
     "pytest",
     "mypy",
     "types-docutils",
+    # ipython is only installed for the convenience of the developer
+    "ipython"
 ]
 
 [tool.hatch.version]

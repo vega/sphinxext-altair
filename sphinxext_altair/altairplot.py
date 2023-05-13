@@ -58,9 +58,12 @@ import io
 import json
 import os
 import warnings
+from typing import Any, Callable, Dict, List, Literal, Optional, Union
 
 import altair as alt
 import jinja2
+import sphinx.application
+import sphinx.environment
 from altair.utils.execeval import eval_block
 from docutils import nodes
 from docutils.parsers.rst import Directive
@@ -102,7 +105,11 @@ class altair_plot(nodes.General, nodes.Element):
     pass
 
 
-def purge_altair_namespaces(app, env, docname):
+def purge_altair_namespaces(
+    app: sphinx.application.Sphinx,
+    env: sphinx.environment.BuildEnvironment,
+    docname: str,
+) -> None:
     if not hasattr(env, "_altair_namespaces"):
         return
     env._altair_namespaces.pop(docname, {})
@@ -111,32 +118,32 @@ def purge_altair_namespaces(app, env, docname):
 DEFAULT_ALTAIRPLOT_LINKS = {"editor": True, "source": True, "export": True}
 
 
-def validate_links(links):
+def validate_links(links: str) -> Union[Dict[str, bool], Literal[False]]:
     if links.strip().lower() == "none":
         return False
 
-    links = links.strip().split()
-    diff = set(links) - set(DEFAULT_ALTAIRPLOT_LINKS.keys())
+    links_split = links.strip().split()
+    diff = set(links_split) - set(DEFAULT_ALTAIRPLOT_LINKS.keys())
     if diff:
         raise ValueError("Following links are invalid: {}".format(list(diff)))
-    return {link: link in links for link in DEFAULT_ALTAIRPLOT_LINKS}
+    return {link: link in links_split for link in DEFAULT_ALTAIRPLOT_LINKS}
 
 
-def validate_output(output):
+def validate_output(output: str) -> str:
     output = output.strip().lower()
     if output not in ["plot", "repr", "stdout", "none"]:
         raise ValueError(":output: flag must be one of [plot|repr|stdout|none]")
     return output
 
 
-def validate_div_class(output):
+def validate_div_class(output: str) -> str:
     return output.strip().lower()
 
 
 class AltairPlotDirective(Directive):
     has_content = True
 
-    option_spec = {
+    option_spec: Dict[str, Union[flag, unchanged, Callable[[str], Any]]] = {
         "hide-code": flag,
         "remove-code": flag,
         "code-below": flag,
@@ -149,22 +156,22 @@ class AltairPlotDirective(Directive):
         "div_class": validate_div_class,
     }
 
-    def run(self):
-        env = self.state.document.settings.env
+    def run(self) -> List[nodes.Element]:
+        env: sphinx.environment.BuildEnvironment = self.state.document.settings.env
         app = env.app
 
         hide_code = "hide-code" in self.options
         remove_code = "remove-code" in self.options
         code_below = "code-below" in self.options
         strict = "strict" in self.options
-        div_class = self.options.get("div_class", None)
+        div_class: Optional[str] = self.options.get("div_class", None)
 
         if not hasattr(env, "_altair_namespaces"):
-            env._altair_namespaces = {}
+            env._altair_namespaces = {}  # type: ignore[attr-defined]
         namespace_id = self.options.get("namespace", "default")
-        namespace = env._altair_namespaces.setdefault(env.docname, {}).setdefault(
-            namespace_id, {}
-        )
+        namespace = env._altair_namespaces.setdefault(  # type: ignore[attr-defined]
+            env.docname, {}
+        ).setdefault(namespace_id, {})
 
         code = "\n".join(self.content)
 
@@ -229,7 +236,7 @@ class AltairPlotDirective(Directive):
         return result
 
 
-def html_visit_altair_plot(self, node):
+def html_visit_altair_plot(self, node: nodes.Element) -> None:
     # Execute the code, saving output and namespace
     namespace = node["namespace"]
     try:
@@ -303,8 +310,7 @@ def html_visit_altair_plot(self, node):
         raise nodes.SkipNode
 
 
-def generic_visit_altair_plot(self, node):
-    # TODO: generate PNGs and insert them here
+def generic_visit_altair_plot(self, node: nodes.Element) -> None:
     if "alt" in node.attributes:
         self.body.append(_("[ graph: %s ]") % node["alt"])
     else:
@@ -312,20 +318,20 @@ def generic_visit_altair_plot(self, node):
     raise nodes.SkipNode
 
 
-def depart_altair_plot(self, node):
+def depart_altair_plot(self, node: nodes.Element) -> None:
     return
 
 
-def builder_inited(app):
+def builder_inited(app: sphinx.application.Sphinx) -> None:
     app.add_js_file(app.config.altairplot_vega_js_url)
     app.add_js_file(app.config.altairplot_vegalite_js_url)
     app.add_js_file(app.config.altairplot_vegaembed_js_url)
 
 
-def setup(app):
-    setup.app = app
-    setup.config = app.config
-    setup.confdir = app.confdir
+def setup(app: sphinx.application.Sphinx) -> Dict[str, str]:
+    setup.app = app  # type: ignore[attr-defined]
+    setup.config = app.config  # type: ignore[attr-defined]
+    setup.confdir = app.confdir  # type: ignore[attr-defined]
 
     app.add_config_value("altairplot_links", DEFAULT_ALTAIRPLOT_LINKS, "env")
 
