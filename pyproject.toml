@@ -67,7 +67,7 @@ allow-direct-references = true
 
 [tool.hatch.build]
 include = [
-    "/sphinxext_altair",
+    "/sphinxext_altair"
 ]
 
 [tool.hatch.envs.default]
