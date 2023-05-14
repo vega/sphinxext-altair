@@ -68,9 +68,6 @@ allow-direct-references = true
 [tool.hatch.build]
 include = [
     "/sphinxext_altair",
-    "README.md",
-    "LICENSE",
-    "pyproject.toml"
 ]
 
 [tool.hatch.envs.default]
