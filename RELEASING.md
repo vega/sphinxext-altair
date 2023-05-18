@@ -38,3 +38,7 @@
         git push upstream main
 
 10. Add release in https://github.com/altair-viz/sphinxext-altair/releases/ and use version tag
+
+11. Double-check that a conda-forge pull request is generated from the updated
+    pip package by the conda-forge bot (may take up to ~an hour):
+    https://github.com/conda-forge/sphinxext-altair-feedstock/pulls
