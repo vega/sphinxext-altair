@@ -1,17 +1,19 @@
 # How to cut a new release
-1. Create a new virtual environment following the instructions in `README.md`.
-
-2. Make certain your branch is in sync with head:
+1. Make certain your branch is in sync with head:
 
         git pull upstream main
 
-3. Update version to, e.g. 0.2.0 in `sphinxext_altair/__init__.py`
+2. Update version to, e.g. 0.2.0 in `sphinxext_altair/__init__.py`
 
-4. Commit change and push to upstream main:
+3. Commit change and push to upstream main:
 
         git add . -u
         git commit -m "MAINT: bump version to 0.2.0"
         git push upstream main
+
+4. Run test suite again after commit above to make sure everything passes:
+
+        hatch run test
 
 5. Tag the release:
 
