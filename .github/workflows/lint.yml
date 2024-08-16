@@ -26,4 +26,4 @@ jobs:
         hatch run ruff format --check .
     - name: Lint with mypy
       run: |
-        mypy sphinxext_altair tests
+        hatch run mypy sphinxext_altair tests
