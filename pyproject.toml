@@ -3,7 +3,6 @@
 # 2 project configuration
 # 3 tool configuration, for:
 # - hatch
-# - black
 # - ruff
 # - pytest
 # - mypy
@@ -16,11 +15,11 @@ build-backend = "hatchling.build"
 name = "sphinxext-altair"
 authors = [ {name = "sphinxext-altair Contributors"} ]
 dependencies = [
-    "altair>=4.0.0",
+    "altair>=5.0.0",
     "docutils",
     "jinja2",
     "sphinx",
-    "typing_extensions>=4.0.1; python_version<\"3.8\"",
+    "typing_extensions>=4.10.0; python_version<\"3.13\"",
 ]
 description = "sphinxext-altair: Sphinx extension for embedding Altair charts"
 readme = "README.md"
@@ -28,7 +27,7 @@ keywords = [
     "altair",
     "sphinxext"
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 dynamic = ["version"]
 license-files = { paths = ["LICENSE"] }
 classifiers= [
@@ -37,11 +36,11 @@ classifiers= [
     "License :: OSI Approved :: BSD License",
     "Natural Language :: English",
     "Framework :: Sphinx :: Extension",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Typing :: Typed",
 ]
 
@@ -51,9 +50,9 @@ Source = "https://github.com/altair-viz/sphinxext-altair"
 [project.optional-dependencies]
 dev = [
     "hatch",
-    "ruff",
-    "black<24",
+    "ruff>=0.6.0",
     "pytest",
+    "pytest-xdist[psutil]~=3.5",
     "mypy",
     "types-docutils",
     # ipython is only installed for the convenience of the developer
@@ -67,42 +66,111 @@ path = "sphinxext_altair/__init__.py"
 allow-direct-references = true
 
 [tool.hatch.build]
-include = [
-    "/sphinxext_altair"
-]
+include = ["/sphinxext_altair"]
 
 [tool.hatch.envs.default]
 features = ["dev"]
+installer = "uv"
 
-[tool.hatch.envs.default.scripts]
-test = [
-    "black --diff --color --check .",
-    "ruff check .",
+[tool.hatch.envs.hatch-test]
+features = ["dev"]
+default-args = ["--numprocesses=logical","--doctest-modules", "tests"]
+parallel = true
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.hatch-test.scripts]
+run = [
+    "ruff check .", 
+    "ruff format --diff --check .",
     "mypy sphinxext_altair tests",
-    "python -m pytest tests"
+    "pytest{env:HATCH_TEST_ARGS:} {args}"
 ]
+run-cov = "coverage run -m pytest{env:HATCH_TEST_ARGS:} {args}"
+cov-combine = "coverage combine"
+cov-report = "coverage report"
 
-build-test-docs = ["sphinx-build -b html tests/roots/test-altairplot tests/roots/test-altairplot/_build/html"]
-serve-test-docs = ["(cd tests/roots/test-altairplot/_build/html && python -m http.server)"]
+[tool.hatch.envs.doc]
+features = ["dev"]
 
-
-[tool.black]
-line-length = 88
-target-version = ["py37", "py38", "py39", "py310", "py311"]
-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.mypy_cache
-  | build
-  | dist
-  | .venv
-)/
-'''
+[tool.hatch.envs.doc.scripts]
+clean-build-html = ["sphinx-build -b html --fresh-env tests/roots/test-altairplot tests/roots/test-altairplot/_build/html"]
+build-html = ["sphinx-build -b html tests/roots/test-altairplot tests/roots/test-altairplot/_build/html"]
+serve = ["(cd tests/roots/test-altairplot/_build/html && python -m http.server)"]
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py38"
 line-length = 88
+indent-width = 4
+exclude = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
+# https://docs.astral.sh/ruff/formatter/#docstring-formatting
+docstring-code-format = true
+docstring-code-line-length = 88
+
+[tool.ruff.lint]
+# https://docs.astral.sh/ruff/preview/
+preview = true
+
+# https://docs.astral.sh/ruff/settings/#lint_extend-safe-fixes
+extend-safe-fixes=[
+    # unnecessary-comprehension-in-call
+    "C419",
+    # literal-membership
+    "PLR6201",
+    # from __future__ import annotations #
+    # ---------------------------------- # 
+    "UP006",
+    "UP007",
+    "UP008",
+    "TCH",
+    # assign exception msg to variable #
+    # -------------------------------- #
+    "EM101",
+    "EM102",
+    # trailing-whitespace
+    "W291",
+    # blank line contains whitespace
+    "W293",
+    # unsorted-dunder-all
+    "RUF022",
+    # pydocstyle #
+    # ---------- #
+    # fits-on-one-line
+    "D200",
+    # escape-sequence-in-docstring
+    "D301",
+    # ends-in-period
+    "D400",
+    # missing-return-type-special-method 
+    "ANN204",
+    # unnecessary-dict-comprehension-for-iterable
+    "C420",
+]
+
+# https://docs.astral.sh/ruff/preview/#using-rules-that-are-in-preview
+extend-select=[
+    # refurb
+    "FURB", 
+    # pylint (preview) autofix #
+    # ------------------------ #
+    # unnecessary-dunder-call
+    "PLC2801", 
+    # unnecessary-dict-index-lookup
+    "PLR1733", 
+    # unnecessary-list-index-lookup
+    "PLR1736",
+    # literal-membership
+    "PLR6201",
+    # unspecified-encoding
+    "PLW1514",
+]
 select = [
     # flake8-bugbear
     "B",
@@ -110,21 +178,126 @@ select = [
     "C4",
     # pycodestyle-error
     "E",
-    # pycodestyle-warning
-    "W",
+    # flake8-errmsg
+    "EM",
     # pyflakes
     "F",
+    # flake8-future-annotations
+    "FA",
+    # flynt
+    "FLY",
+    # flake8-pie
+    "PIE",
+    # flake8-pytest-style
+    "PT",
+    # flake8-use-pathlib
+    "PTH",
+    # Ruff-specific rules
+    "RUF",
+    # flake8-simplify
+    "SIM",
+    # flake8-type-checking
+    "TCH",
     # flake8-tidy-imports
-    "TID"
+    "TID",
+    # pyupgrade
+    "UP",
+    # pycodestyle-warning
+    "W",
+    # pylint (stable) autofix #
+    # ----------------------- #
+    # iteration-over-set
+    "PLC0208",
+    # manual-from-import
+    "PLR0402",
+    # useless-return
+    "PLR1711",
+    # repeated-equality-comparison
+    "PLR1714",
+    # collapsible-else-if
+    "PLR5501",
+    # useless-else-on-loop
+    "PLW0120",
+    # subprocess-run-without-check
+    "PLW1510",
+    # nested-min-max
+    "PLW3301",
+    # pydocstyle #
+    # ---------- #
+    "D",
+    # multi-line-summary-second-line
+    "D213",
+    # numpy-specific-rules
+    "NPY",
+    # flake8-annotations
+    "ANN",
+    # unsorted-imports
+    "I001",
+    # complex-structure
+    "C901",
 ]
-exclude = [
-    ".git",
-    "build",
-    "__pycache__",
+ignore = [  
+    # Whitespace before ':'
+    "E203",
+    # Too many leading '#' for block comment
+    "E266",
+    # Line too long
+    "E501",
+    # zip() without an explicit strict= parameter set.
+    # python>=3.10 only
+    "B905",
+    # mutable-class-default
+    "RUF012",
+    # suppressible-exception
+    # https://github.com/vega/altair/pull/3431#discussion_r1629808660
+    "SIM105",
+    # pydocstyle/ https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules #
+    # ------------------------------------------------------------------------- #
+    # undocumented-public-module
+    "D100",
+    # undocumented-public-class
+    "D101",
+    # undocumented-public-method  
+    "D102",
+    # undocumented-public-function  
+    "D103",
+    # undocumented-public-package   
+    "D104",
+    # undocumented-magic-method 
+    "D105",
+    # undocumented-public-init  
+    "D107",
+    # indent-with-spaces
+    "D206",
+    # multi-line-summary-first-line ((D213) is the opposite of this)
+    "D212",
+    # Imperative mood   
+    "D401",
+    # Blank line after last section 
+    "D413",
+    # doc-line-too-long
+    "W505",
+    # Any as annotation
+    "ANN401" 
 ]
+# https://docs.astral.sh/ruff/settings/#lintpydocstyle
+pydocstyle={ convention="numpy" }
+mccabe={ max-complexity=10 }
+
+[tool.ruff.lint.isort]
+extra-standard-library = ["typing_extensions"]
+known-first-party=[
+    "altair",
+    "altair_tiles",
+    "vega_datasets",
+    "vegafusion",
+    "vl_convert",
+]
+split-on-trailing-comma = false
+
+[tool.ruff.lint.per-file-ignores]
+"!sphinxext_altair/altairplot.py" = ["ANN"]
 
 [[tool.mypy.overrides]]
-module = [
-    "altair.*"
-]
+module = ["altair.*"]
 ignore_missing_imports = true
