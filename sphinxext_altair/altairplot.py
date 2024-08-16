@@ -178,9 +178,8 @@ class AltairPlotDirective(Directive):
 
         if not hasattr(env, "_altair_namespaces"):
             env._altair_namespaces = {}
-        namespace_id = self.options.get("namespace", "default")
         namespace = env._altair_namespaces.setdefault(env.docname, {}).setdefault(
-            namespace_id, {}
+            self.options.get("namespace", "default"), {}
         )
 
         # Show code
@@ -281,9 +280,9 @@ def html_visit_altair_plot(self: altair_plot, node: nodes.Element) -> None:  # n
             node.append(repr_literal)
     elif output == "plot":
         if isinstance(chart, alt.TopLevelMixin):
-            # Last line should be a chart; convert to spec dict
+            # Last line should be a chart; convert to JSON string
             try:
-                spec = chart.to_dict()
+                spec = chart.to_json(indent=None, sort_keys=False)
             except SchemaValidationError as err:
                 msg = f"Invalid chart: {node['code']}"
                 raise ValueError(msg) from err
@@ -292,7 +291,7 @@ def html_visit_altair_plot(self: altair_plot, node: nodes.Element) -> None:  # n
             html = VGL_TEMPLATE.render(
                 div_id=node["div_id"],
                 div_class=node["div_class"],
-                spec=json.dumps(spec),
+                spec=spec,
                 mode="vega-lite",
                 renderer="canvas",
                 actions=json.dumps(node["links"]),
