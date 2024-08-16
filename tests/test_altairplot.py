@@ -2,6 +2,7 @@
 # Tests are inspired by the test suite of sphinx itself
 import pytest
 
+from altair import SCHEMA_URL
 from sphinxext_altair.altairplot import (
     VEGA_JS_URL_DEFAULT,
     VEGAEMBED_JS_URL_DEFAULT,
@@ -59,6 +60,8 @@ def test_altairplotdirective(app):
     assert result.count(VEGAEMBED_JS_URL_DEFAULT)
     assert result.count(VEGALITE_JS_URL_DEFAULT)
     assert result.count(VEGA_JS_URL_DEFAULT)
+    current_url = SCHEMA_URL  # noqa: F841
+    # TODO: use regex to cut down length & avoid hardcoded `SCHEMA_URL`
 
     assert result.count('class="test-class"') == 1
     block_no_output = """\
@@ -90,7 +93,7 @@ def test_altairplotdirective(app):
   // embed when document is loaded, to ensure vega library is available
   // this works on all modern browsers, except IE8 and older
   document.addEventListener("DOMContentLoaded", function(event) {
-      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.8.0.json"};
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json"};
       var opt = {
         "mode": "vega-lite",
         "renderer": "canvas",
@@ -108,7 +111,7 @@ def test_altairplotdirective(app):
   // embed when document is loaded, to ensure vega library is available
   // this works on all modern browsers, except IE8 and older
   document.addEventListener("DOMContentLoaded", function(event) {
-      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.8.0.json"};
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json"};
       var opt = {
         "mode": "vega-lite",
         "renderer": "canvas",
@@ -144,7 +147,7 @@ def test_altairplotdirective(app):
   // embed when document is loaded, to ensure vega library is available
   // this works on all modern browsers, except IE8 and older
   document.addEventListener("DOMContentLoaded", function(event) {
-      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.8.0.json"};
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json"};
       var opt = {
         "mode": "vega-lite",
         "renderer": "canvas",
@@ -170,7 +173,7 @@ def test_altairplotdirective(app):
   // embed when document is loaded, to ensure vega library is available
   // this works on all modern browsers, except IE8 and older
   document.addEventListener("DOMContentLoaded", function(event) {
-      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.8.0.json"};
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json"};
       var opt = {
         "mode": "vega-lite",
         "renderer": "canvas",
@@ -195,7 +198,7 @@ def test_altairplotdirective(app):
   // embed when document is loaded, to ensure vega library is available
   // this works on all modern browsers, except IE8 and older
   document.addEventListener("DOMContentLoaded", function(event) {
-      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.8.0.json"};
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json"};
       var opt = {
         "mode": "vega-lite",
         "renderer": "canvas",
@@ -220,7 +223,7 @@ def test_altairplotdirective(app):
   // embed when document is loaded, to ensure vega library is available
   // this works on all modern browsers, except IE8 and older
   document.addEventListener("DOMContentLoaded", function(event) {
-      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.8.0.json"};
+      var spec = {"config": {"view": {"continuousWidth": 300, "continuousHeight": 300}}, "data": {"values": [{"x": "A", "y": 5}, {"x": "B", "y": 3}, {"x": "C", "y": 6}, {"x": "D", "y": 7}, {"x": "E", "y": 2}]}, "mark": {"type": "bar"}, "encoding": {"x": {"field": "x", "type": "nominal"}, "y": {"field": "y", "type": "quantitative"}}, "$schema": "https://vega.github.io/schema/vega-lite/v5.20.1.json"};
       var opt = {
         "mode": "vega-lite",
         "renderer": "canvas",
