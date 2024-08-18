@@ -27,7 +27,7 @@ keywords = [
     "altair",
     "sphinxext"
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dynamic = ["version"]
 license-files = { paths = ["LICENSE"] }
 classifiers= [
@@ -36,7 +36,6 @@ classifiers= [
     "License :: OSI Approved :: BSD License",
     "Natural Language :: English",
     "Framework :: Sphinx :: Extension",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -78,7 +77,7 @@ default-args = ["--numprocesses=logical","--doctest-modules", "tests"]
 parallel = true
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+python = ["3.9", "3.10", "3.11", "3.12"]
 
 [tool.hatch.envs.hatch-test.scripts]
 run = [
@@ -100,7 +99,7 @@ build-html = ["sphinx-build -b html tests/roots/test-altairplot tests/roots/test
 serve = ["(cd tests/roots/test-altairplot/_build/html && python -m http.server)"]
 
 [tool.ruff]
-target-version = "py38"
+target-version = "py39"
 line-length = 88
 indent-width = 4
 exclude = []
