@@ -1,7 +1,7 @@
-import os
 import sys
+from pathlib import Path
 
-source_dir = os.path.abspath(".")
+source_dir = str(Path.cwd())
 if source_dir not in sys.path:
     sys.path.insert(0, source_dir)
 
