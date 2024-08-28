@@ -1,5 +1,5 @@
 # sphinxext-altair
-**sphinxext-altair** provides the directive `altair-plot` to insert live-rendered Altair plots within your Sphinx documentation:
+**sphinxext-altair** provides the directive `altair-plot` to insert live-rendered Vega-Altair plots within your Sphinx documentation:
 
 ```python
 .. altair-plot::
@@ -29,7 +29,7 @@ extensions = [
 ]
 ```
 
-You can find all available options in the docstring of `sphinxext_altair/altairplot.py`. For more examples on how to use this extension, see the test Sphinx documentation in `tests/roots/test-altairplot` or the official [Altair documentation](https://github.com/altair-viz/altair/tree/master/doc).
+You can find all available options in the docstring of `sphinxext_altair/altairplot.py`. For more examples on how to use this extension, see the test Sphinx documentation in `tests/roots/test-altairplot` or the official [Vega-Altair documentation](https://github.com/vega/altair/tree/main/doc).
 
 You can install the extension with:
 
