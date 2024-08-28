@@ -47,7 +47,7 @@ python -m venv .venv
 pip install -e '.[dev]'
 ```
 
-`sphinxext-altair` uses [black](https://github.com/psf/black) for code formatting, [mypy](https://github.com/python/mypy) for static type checking, [ruff](https://github.com/charliermarsh/ruff) for various linting rules, and [pytest](https://github.com/pytest-dev/pytest) for testing. All these tools can be executed by running:
+`sphinxext-altair` uses [ruff](https://github.com/astral-sh/ruff) for code formatting and linting rules, [mypy](https://github.com/python/mypy) for static type checking, and [pytest](https://github.com/pytest-dev/pytest) for testing. All these tools can be executed by running:
 
 ```bash
 hatch run test
