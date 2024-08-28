@@ -2,19 +2,19 @@
 **sphinxext-altair** provides the directive `altair-plot` to insert live-rendered Altair plots within your Sphinx documentation:
 
 ```python
-    .. altair-plot::
-        import altair as alt
-        from vega_datasets import data
+.. altair-plot::
+    import altair as alt
+    from vega_datasets import data
 
 
-        cars = data.cars()
+    cars = data.cars()
 
-        alt.Chart(cars).mark_point().encode(
-            x='Horsepower',
-            y='Miles_per_Gallon',
-            color='Origin',
-            shape='Origin'
-        )
+    alt.Chart(cars).mark_point().encode(
+        x='Horsepower',
+        y='Miles_per_Gallon',
+        color='Origin',
+        shape='Origin'
+    )
 ```
 
 <img src="https://raw.githubusercontent.com/altair-viz/sphinxext-altair/main/images/example_screenshot.png"  width="70%">
@@ -37,7 +37,6 @@ You can install the extension with:
 pip install sphinxext-altair
 ```
 
-
 # Contributing
 It's recommended to use a virtual environment for development:
 
@@ -47,13 +46,16 @@ python -m venv .venv
 pip install -e '.[dev]'
 ```
 
-`sphinxext-altair` uses [ruff](https://github.com/astral-sh/ruff) for code formatting and linting rules, [mypy](https://github.com/python/mypy) for static type checking, and [pytest](https://github.com/pytest-dev/pytest) for testing. All these tools can be executed by running:
+`sphinxext-altair` uses [ruff](https://github.com/astral-sh/ruff) for code formatting and linting rules, [mypy](https://github.com/python/mypy) for static type checking, and [pytest](https://github.com/pytest-dev/pytest) for testing.   
+All of these tools can be executed by running:
 
 ```bash
 hatch test
 ```
 
-As part of those tests, a Sphinx documentation is built at `tests/roots/test-altairplot`. You can manually build this documentation and view it which is very useful during development of a new feature. For example, if you want to add a new option to the `altair-plot` directive, you can add another example in the file `tests/roots/test-altairplot/index.rst` and then build and view the documentation by running:
+As part of those tests, a Sphinx documentation is built at `tests/roots/test-altairplot`. You can manually build this documentation and view it which is very useful during development of a new feature.
+
+For example, if you want to add a new option to the `altair-plot` directive, you can add another example in the file `tests/roots/test-altairplot/index.rst` and then build and view the documentation by running:
 
 ```bash
 hatch run doc:clean-build-html
