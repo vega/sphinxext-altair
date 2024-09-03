@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import pytest
 
@@ -20,11 +20,13 @@ from sphinxext_altair.altairplot import (
 if TYPE_CHECKING:
     from sphinx.application import Sphinx
 
+    from sphinxext_altair.altairplot import BuildEnvironment
+
 
 @pytest.mark.parametrize("add_namespaces_attr", [True, False])
 @pytest.mark.sphinx(testroot="altairplot")
-def test_purge_altair_namespaces(add_namespaces_attr, app):
-    env = app.env
+def test_purge_altair_namespaces(add_namespaces_attr: bool, app: Sphinx) -> None:
+    env: BuildEnvironment = cast("BuildEnvironment", app.env)
     if add_namespaces_attr:
         env._altair_namespaces = {"docname": {}}
 
@@ -48,7 +50,7 @@ def test_purge_altair_namespaces(add_namespaces_attr, app):
         ("editor source", {"editor": True, "source": True, "export": False}),
     ],
 )
-def test_validate_links(links, expected):
+def test_validate_links(links: str, expected: str | bool | dict[str, bool]) -> None:
     if expected == "raise":
         with pytest.raises(
             ValueError, match=r"Following links are invalid: \['unknown'\]"
