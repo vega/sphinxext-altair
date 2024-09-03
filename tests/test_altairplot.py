@@ -1,5 +1,10 @@
 # ruff: noqa: E501
 # Tests are inspired by the test suite of sphinx itself
+from __future__ import annotations
+
+import re
+from typing import TYPE_CHECKING
+
 import pytest
 
 from altair import SCHEMA_URL
@@ -7,9 +12,13 @@ from sphinxext_altair.altairplot import (
     VEGA_JS_URL_DEFAULT,
     VEGAEMBED_JS_URL_DEFAULT,
     VEGALITE_JS_URL_DEFAULT,
+    AltairPlotWarning,
     purge_altair_namespaces,
     validate_links,
 )
+
+if TYPE_CHECKING:
+    from sphinx.application import Sphinx
 
 
 @pytest.mark.parametrize("add_namespaces_attr", [True, False])
@@ -51,8 +60,15 @@ def test_validate_links(links, expected):
 
 
 @pytest.mark.sphinx(testroot="altairplot", freshenv=True)
-def test_altairplotdirective(app):
-    app.builder.build_all()
+def test_altairplotdirective(app: Sphinx) -> None:
+    with pytest.warns(
+        AltairPlotWarning,
+        match=re.compile(
+            r"errors_warnings\.rst:5\n.+polars\.DataFrame\(\{\"a\": \[1, 2, 3\], \"b\": \[4, 5, 6\]\}\)",
+            re.DOTALL,
+        ),
+    ):
+        app.builder.build_all()
     result = (app.outdir / "index.html").read_text(encoding="utf8")
     assert result.count("https://cdn.jsdelivr.net/npm/vega@") == 1
     assert result.count("https://cdn.jsdelivr.net/npm/vega-lite@") == 1
