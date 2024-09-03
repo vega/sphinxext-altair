@@ -306,11 +306,14 @@ def html_visit_altair_plot(self: altair_plot, node: nodes.Element) -> None:  # n
             )
             self.body.append(html)
         else:
+            err_file = node["rst_source"]
+            line_no = node["rst_lineno"]
             msg = (
-                f"altair-plot: {node['rst_source']}:{node['rst_lineno']} Malformed block. "
-                "Last line of code block should define a valid altair Chart object."
+                f"Malformed block.\n"
+                f"  {err_file}:{line_no}\n"
+                f"    Last line of code block should define a valid altair Chart object."
             )
-            warnings.warn(msg, stacklevel=1)
+            warnings.warn(msg, AltairPlotWarning, stacklevel=1)
         raise nodes.SkipNode
 
 
