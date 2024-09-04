@@ -233,6 +233,9 @@ class AltairPlotDirective(Directive):
         return result
 
 
+class AltairPlotWarning(UserWarning): ...
+
+
 def html_visit_altair_plot(self: altair_plot, node: nodes.Element) -> None:  # noqa: C901
     # Execute the code, saving output and namespace
     namespace = node["namespace"]
@@ -242,14 +245,19 @@ def html_visit_altair_plot(self: altair_plot, node: nodes.Element) -> None:  # n
             chart = eval_block(node["code"], namespace)
         stdout = f.getvalue()
     except Exception as err:
+        err_file = node["rst_source"]
+        line_no = node["rst_lineno"]
+        err_code = node["code"]
         msg = (
-            f"altair-plot: {node['rst_source']}:{node['rst_lineno']} "
-            f"Code Execution failed: {type(err).__name__}: {err!s}"
+            f"Code Execution failed.\n"
+            f"  {err_file}:{line_no}\n"
+            f"    {type(err).__name__}: {err!s}\n"
+            f"    {err_code}"
         )
         if node["strict"]:
             raise ValueError(msg) from err
         else:
-            warnings.warn(msg, stacklevel=1)
+            warnings.warn(msg, AltairPlotWarning, stacklevel=1)
             raise nodes.SkipNode from err
 
     if chart_name := node.get("chart-var-name", None):
@@ -298,11 +306,14 @@ def html_visit_altair_plot(self: altair_plot, node: nodes.Element) -> None:  # n
             )
             self.body.append(html)
         else:
+            err_file = node["rst_source"]
+            line_no = node["rst_lineno"]
             msg = (
-                f"altair-plot: {node['rst_source']}:{node['rst_lineno']} Malformed block. "
-                "Last line of code block should define a valid altair Chart object."
+                f"Malformed block.\n"
+                f"  {err_file}:{line_no}\n"
+                f"    Last line of code block should define a valid altair Chart object."
             )
-            warnings.warn(msg, stacklevel=1)
+            warnings.warn(msg, AltairPlotWarning, stacklevel=1)
         raise nodes.SkipNode
 
 
