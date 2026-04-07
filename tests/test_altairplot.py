@@ -252,3 +252,12 @@ def test_altairplotdirective(app: Sphinx) -> None:
 </script>
 </div>"""
     assert block_plot_7 in result
+
+
+@pytest.mark.sphinx(testroot="altairplot-filearg", freshenv=True)
+def test_altairplotdirective_file_argument(app: Sphinx) -> None:
+    app.builder.build_all()
+    result = (app.outdir / "index.html").read_text(encoding="utf8")
+    assert result.count("before-marker") == 2
+    assert result.count("after-marker") == 4
+    assert result.count("# START-AFTER-MARKER") == 1

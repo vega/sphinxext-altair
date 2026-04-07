@@ -69,6 +69,7 @@ import jinja2
 from docutils import nodes
 from docutils.parsers.rst import Directive
 from docutils.parsers.rst.directives import flag, unchanged
+from sphinx.directives.code import LiteralIncludeReader
 from sphinx.locale import _
 
 import altair as alt
@@ -156,6 +157,9 @@ def validate_output(output: str) -> str:
 
 class AltairPlotDirective(Directive):
     has_content: ClassVar[bool] = True
+    required_arguments: ClassVar[int] = 0
+    optional_arguments: ClassVar[int] = 1
+    final_argument_whitespace: ClassVar[bool] = True
     option_spec: ClassVar[dict[str, Callable[[str], Any]]] = {
         "hide-code": flag,
         "remove-code": flag,
@@ -167,7 +171,44 @@ class AltairPlotDirective(Directive):
         "chart-var-name": unchanged,
         "strict": flag,
         "div_class": strip_lower,
+        "start-after": unchanged,
     }
+
+    _code_source_file: str | None = None
+
+    def _read_code(self, env: BuildEnvironment) -> str:
+        self._code_source_file = None
+        has_file_arg = False
+        if len(self.arguments) == 1 and not self.content:
+            candidate = self.arguments[0]
+            if "\n" not in candidate:
+                _, filename = env.relfn2path(candidate)
+                if Path(filename).is_file():
+                    has_file_arg = True
+        if has_file_arg:
+            rel_filename, filename = env.relfn2path(self.arguments[0])
+            env.note_dependency(rel_filename)
+            self._code_source_file = rel_filename
+            include_options: dict[str, Any] = {}
+            if "start-after" in self.options:
+                include_options["start-after"] = self.options["start-after"]
+            code, _ = LiteralIncludeReader(
+                filename, include_options, env.app.config
+            ).read(location=(self.state_machine.document["source"], self.lineno))
+            return code
+
+        if "start-after" in self.options and not has_file_arg:
+            msg = ":start-after: can only be used with a file path argument"
+            raise ValueError(msg)
+
+        if self.arguments:
+            # Keep backwards compatibility when no blank line appears after
+            # ``.. altair-plot::`` by treating parsed arguments as code text.
+            prefix = " ".join(self.arguments)
+            lines = [prefix, *self.content]
+            return "\n".join(lines)
+
+        return "\n".join(self.content)
 
     def run(self) -> list[nodes.Element]:
         env = t.cast("BuildEnvironment", self.state.document.settings.env)
@@ -183,7 +224,7 @@ class AltairPlotDirective(Directive):
         )
 
         # Show code
-        code = "\n".join(self.content)
+        code = self._read_code(env)
         source_literal = nodes.literal_block(code, code)
         source_literal["language"] = "python"
 
@@ -209,6 +250,7 @@ class AltairPlotDirective(Directive):
             relpath=os.path.relpath(rst_fp.parent, env.srcdir),
             rst_source=rst_source,
             rst_lineno=self.lineno,
+            code_source_file=self._code_source_file,
             links=self.options.get("links", app.builder.config.altairplot_links),
             output=self.options.get("output", "plot"),
             strict="strict" in self.options,
