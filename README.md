@@ -38,19 +38,17 @@ pip install sphinxext-altair
 ```
 
 # Contributing
-It's recommended to use a virtual environment for development:
+It's recommended to use `uv` for development:
 
 ```bash
-python -m venv .venv
-# Install the project in editable mode including development dependencies
-pip install -e '.[dev]'
+uv sync --extra dev
 ```
 
 `sphinxext-altair` uses [ruff](https://github.com/astral-sh/ruff) for code formatting and linting rules, [mypy](https://github.com/python/mypy) for static type checking, and [pytest](https://github.com/pytest-dev/pytest) for testing.   
 All of these tools can be executed by running:
 
 ```bash
-hatch test
+uv run hatch test
 ```
 
 As part of those tests, a Sphinx documentation is built at `tests/roots/test-altairplot`. You can manually build this documentation and view it which is very useful during development of a new feature.
@@ -58,8 +56,8 @@ As part of those tests, a Sphinx documentation is built at `tests/roots/test-alt
 For example, if you want to add a new option to the `altair-plot` directive, you can add another example in the file `tests/roots/test-altairplot/index.rst` and then build and view the documentation by running:
 
 ```bash
-hatch run doc:clean-build-html
-hatch run doc:serve
+uv run hatch run doc:clean-build-html
+uv run hatch run doc:serve
 ```
 
 The test documentation can now be viewed at [http://localhost:8000](http://localhost:8000).
