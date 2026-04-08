@@ -29,7 +29,7 @@ keywords = [
 ]
 requires-python = ">=3.9"
 dynamic = ["version"]
-license-files = { paths = ["LICENSE"] }
+license-files = ["LICENSE"]
 classifiers= [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Plugins",
