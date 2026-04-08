@@ -1,6 +1,7 @@
 # Tests are inspired by the test suite of sphinx itself
 from __future__ import annotations
 
+import json
 import re
 from typing import TYPE_CHECKING, cast
 
@@ -79,27 +80,59 @@ def test_altairplotdirective(app: Sphinx) -> None:
     assert result.count(VEGA_JS_URL_DEFAULT)
     assert SCHEMA_URL in result
 
+    def extract_embed_values(
+        plot_id: int,
+    ) -> tuple[dict[str, object], dict[str, object], str | None]:
+        div_id = f"index-rst-altair-plot-{plot_id}"
+        match = re.search(
+            rf'<div id="{div_id}"(?: class="([^"]+)")?>\s*<script>.*?'
+            rf"var spec = (\{{.*?\}});\s*"
+            rf"var opt = (\{{.*?\}});\s*"
+            rf"vegaEmbed\('#{div_id}', spec, opt\)",
+            result,
+            re.DOTALL,
+        )
+        assert match is not None
+        class_name = match.group(1)
+        spec = json.loads(match.group(2))
+        opt = json.loads(match.group(3))
+        return spec, opt, class_name
+
+    for plot_id in (1, 2, 4, 5, 6, 7):
+        spec, opt, _ = extract_embed_values(plot_id)
+        assert spec["$schema"] == SCHEMA_URL
+        assert opt["mode"] == "vega-lite"
+        assert opt["renderer"] == "canvas"
+
     assert 'id="index-rst-altair-source-0"' in result
     assert '<div id="index-rst-altair-plot-0"' not in result
 
     assert 'id="index-rst-altair-source-1"' in result
-    assert 'id="index-rst-altair-plot-1"' in result
-    assert '"actions": {"editor": true, "source": true, "export": true}' in result
+    _, plot_1_opt, _ = extract_embed_values(1)
+    assert plot_1_opt["actions"] == {"editor": True, "source": True, "export": True}
 
-    assert '<div id="index-rst-altair-plot-2">' in result
-    assert '</div><div class="highlight-python notranslate">' in result
+    code_below_section = re.search(
+        r'<section id="code-below-plot">.*?</section>', result, re.DOTALL
+    )
+    assert code_below_section is not None
+    assert re.search(
+        r'<div id="index-rst-altair-plot-2">.*?</div><div class="highlight-python notranslate">',
+        code_below_section.group(0),
+        re.DOTALL,
+    )
 
     assert 'id="index-rst-altair-source-3"' in result
     assert "Data({" in result
 
-    assert '<div id="index-rst-altair-plot-4"' in result
+    extract_embed_values(4)
     assert 'id="index-rst-altair-source-4"' not in result
 
     assert "Click to show code" in result
-    assert '<div id="index-rst-altair-plot-5"' in result
+    assert re.search(r"<details>.*?Click to show code.*?</details>", result, re.DOTALL)
+    extract_embed_values(5)
 
-    assert '<div id="index-rst-altair-plot-6"' in result
-    assert '"actions": {"editor": true, "source": false, "export": false}' in result
+    _, plot_6_opt, _ = extract_embed_values(6)
+    assert plot_6_opt["actions"] == {"editor": True, "source": False, "export": False}
 
-    assert result.count('class="test-class"') == 1
-    assert '<div id="index-rst-altair-plot-7" class="test-class">' in result
+    _, _, plot_7_class = extract_embed_values(7)
+    assert plot_7_class == "test-class"
