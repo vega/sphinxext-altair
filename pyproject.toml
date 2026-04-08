@@ -297,6 +297,9 @@ split-on-trailing-comma = false
 [tool.ruff.lint.per-file-ignores]
 "!sphinxext_altair/altairplot.py" = ["ANN"]
 
+[tool.mypy]
+exclude = "^tests/roots/"
+
 [[tool.mypy.overrides]]
 module = ["altair.*"]
 ignore_missing_imports = true
