@@ -212,8 +212,9 @@ class AltairPlotDirective(Directive):
             links=self.options.get("links", app.builder.config.altairplot_links),
             output=self.options.get("output", "plot"),
             strict="strict" in self.options,
-            **{"chart-var-name": self.options.get("chart-var-name", None)},
         )
+        if "chart-var-name" in self.options:
+            plot_node["chart-var-name"] = self.options["chart-var-name"]
         if "alt" in self.options:
             plot_node["alt"] = self.options["alt"]
 
