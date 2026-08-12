@@ -116,6 +116,7 @@ docstring-code-line-length = 88
 [tool.ruff.lint]
 # https://docs.astral.sh/ruff/preview/
 preview = true
+explicit-preview-rules = true
 
 # https://docs.astral.sh/ruff/settings/#lint_extend-safe-fixes
 extend-safe-fixes=[
