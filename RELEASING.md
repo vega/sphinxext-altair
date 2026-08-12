@@ -13,7 +13,7 @@
 
 4. Run test suite again after commit above to make sure everything passes:
 
-        hatch run test
+        uv run hatch test
 
 5. Tag the release:
 
@@ -22,12 +22,12 @@
 
 6. Build source & wheel distributions:
 
-        hatch clean  # clean old builds & distributions
-        hatch build  # create a source distribution and universal wheel
+        uv run hatch clean  # clean old builds & distributions
+        uv run hatch build  # create a source distribution and universal wheel
 
 7. publish to PyPI (Requires correct PyPI owner permissions):
 
-        hatch publish
+        uv run hatch publish
 
 8. update version to e.g. 0.3.0dev in `sphinxext_altair/__init__.py`
 

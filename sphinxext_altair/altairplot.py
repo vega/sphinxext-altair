@@ -63,7 +63,7 @@ import typing as t
 import warnings
 from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, ClassVar, Literal
+from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 import jinja2
 from docutils import nodes
@@ -76,6 +76,8 @@ from altair.utils.execeval import eval_block
 from altair.utils.schemapi import SchemaValidationError
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from sphinx.application import Sphinx
     from sphinx.environment import BuildEnvironment as _BuildEnvironment
 
@@ -212,8 +214,9 @@ class AltairPlotDirective(Directive):
             links=self.options.get("links", app.builder.config.altairplot_links),
             output=self.options.get("output", "plot"),
             strict="strict" in self.options,
-            **{"chart-var-name": self.options.get("chart-var-name", None)},
         )
+        if "chart-var-name" in self.options:
+            plot_node["chart-var-name"] = self.options["chart-var-name"]
         if "alt" in self.options:
             plot_node["alt"] = self.options["alt"]
 
