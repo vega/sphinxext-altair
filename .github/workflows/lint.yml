@@ -17,7 +17,7 @@ jobs:
     # Installing all dependencies and not just the linters as mypy needs them for type checking
     - name: Sync dependencies
       run: |
-        uv sync --extra dev
+        uv sync --locked --extra dev
     - name: Lint with ruff
       run: |
         uv run hatch run ruff check .

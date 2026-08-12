@@ -63,7 +63,7 @@ import typing as t
 import warnings
 from functools import lru_cache
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, ClassVar, Literal
+from typing import TYPE_CHECKING, Any, ClassVar, Literal
 
 import jinja2
 from docutils import nodes
@@ -76,6 +76,8 @@ from altair.utils.execeval import eval_block
 from altair.utils.schemapi import SchemaValidationError
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from sphinx.application import Sphinx
     from sphinx.environment import BuildEnvironment as _BuildEnvironment
 
